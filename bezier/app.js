@@ -36,7 +36,7 @@ $('#board').on('click', function(evt) {
   POINTS.push([x, y])
 
   drawSkeleton()
-  drawConnectors(1.0 * $('#time').val())
+  drawConnectors(POINTS, 0, 1.0 * $('#time').val())
 })
 
 $('#bp').on('click', function(evt) {
@@ -46,7 +46,7 @@ $('#bp').on('click', function(evt) {
 
 $('#time').on('change', function(evt) {
   var time = 1.0 * $('#time').val()
-  drawConnectors(time)
+  drawConnectors(POINTS, 0, time)
   drawCurvePoints(time)
 })
 
@@ -77,16 +77,22 @@ function drawSkeleton() {
           _skeleton.lines, _skeleton.circles)
 }
 
-function drawConnectors(time) {
-  _erase(_connectors.circles, _connectors.lines, _connectors.points)
+function drawConnectors(points, level, time) {
+  _connectors.circles[level] || (_connectors.circles.push([]))
+  _connectors.lines[level] || (_connectors.lines.push([]))
+  _connectors.points[level] || (_connectors.points.push([]))
 
-  for (var i=0, len=POINTS.length; i < len-1; i++) {
-    var p1=POINTS[i], p2=POINTS[i+1]
+  _erase(_connectors.circles[level],
+         _connectors.lines[level],
+         _connectors.points[level])
+
+  for (var i=0, len=points.length; i < len-1; i++) {
+    var p1=points[i], p2=points[i+1]
       , x = p1[0] + ((p2[0] - p1[0]) * time)
       , y = p1[1] + ((p2[1] - p1[1]) * time)
 
-    _connectors.points.push([x,y])
-    _connectors.circles.push(new Kinetic.Circle({
+    _connectors.points[level].push([x,y])
+    _connectors.circles[level].push(new Kinetic.Circle({
        x: x
       ,y: y
       ,fill: '#0ff'
@@ -94,21 +100,25 @@ function drawConnectors(time) {
     }))
   }
   
-  for (var j=0, len=_connectors.points.length; j < len-1; j++) {
-    _connectors.lines.push(new Kinetic.Line({
-       points: [_connectors.points[j], _connectors.points[j+1]]
+  for (var j=0, len=_connectors.points[level].length; j < len-1; j++) {
+    _connectors.lines[level].push(new Kinetic.Line({
+       points: [_connectors.points[level][j], _connectors.points[level][j+1]]
       ,stroke: '#0ff'
       ,strokeWidth: 1
     }))
   }
 
   _addAll(layers.connectors,
-          _connectors.circles, _connectors.lines)
+          _connectors.circles[level], _connectors.lines[level])
+
+  if (level < POINTS.length-3)
+    drawConnectors(_connectors.points[level], level+1, time);
 }
 
 function drawCurvePoints(time) {
-  for (var i=0, len=_connectors.points.length; i < len-1; i++) {
-    var p1=_connectors.points[i], p2=_connectors.points[i+1]
+  var n = POINTS.length - 3
+  for (var i=0, len=_connectors.points[n].length; i < len-1; i++) {
+    var p1=_connectors.points[n][i], p2=_connectors.points[n][i+1]
       , x = p1[0] + (p2[0] - p1[0]) * time
       , y = p1[1] + (p2[1] - p1[1]) * time
 
