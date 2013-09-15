@@ -8,9 +8,7 @@ var MAX_POINTS = 12
   , SKELETON_LINE_WIDTH = 3
   , SKELETON_RADIUS = SKELETON_LINE_WIDTH + 4
   , CONNECTOR_RADIUS = SKELETON_LINE_WIDTH + 2
-
   , CONNECTOR_COLOR = '#0ff'
-  
 var stage = new Kinetic.Stage({
    container: 'board'
   ,width: 640
@@ -54,6 +52,26 @@ $('#time').on('change', function(evt) {
     drawCurvePoints(time)
 })
 
+// Play the animation
+var playing = false,
+  speed = .5, // movement per second
+  interval = 50; // milliseconds per movement
+$('#play').on('click', function () {
+  if (!playing) {
+    function playon() {
+      var nxt = Math.min((((parseFloat($('#time').val()) + speed * interval / 1000 + 0.01) * 100) | 0) / 100, 1);
+
+      console.log('playon', $('#time').val(), nxt);
+      if (nxt < 1) {
+        setTimeout(playon, interval);
+      }
+
+      $('#time').val(nxt).change();
+    }
+    $('#time').val(0);
+    playon();
+  }
+});
 
 function drawSkeleton() {
   _erase(_skeleton.lines, _skeleton.circles)
@@ -87,7 +105,7 @@ function drawConnectors(points, level, time) {
   _connectors.circles[level] || (_connectors.circles.push([]))
   _connectors.lines[level] || (_connectors.lines.push([]))
   _connectors.points[level] || (_connectors.points.push([]))
-  
+
   _erase(_connectors.circles[level],
          _connectors.lines[level],
          _connectors.points[level])
@@ -105,7 +123,7 @@ function drawConnectors(points, level, time) {
       ,radius: CONNECTOR_RADIUS
     }))
   }
-  
+
   for (var j=0, len=_connectors.points[level].length; j < len-1; j++) {
     _connectors.lines[level].push(new Kinetic.Line({
        points: [_connectors.points[level][j], _connectors.points[level][j+1]]
@@ -116,7 +134,7 @@ function drawConnectors(points, level, time) {
 
   _addAll(layers.connectors,
           _connectors.circles[level], _connectors.lines[level])
-  
+
   if (level < POINTS.length-3)
     drawConnectors(_connectors.points[level], level+1, time);
 }
