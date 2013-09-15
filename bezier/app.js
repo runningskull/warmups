@@ -1,9 +1,9 @@
 var POINTS = []
   , _skeleton = {circles:[], lines:[]}
-  , _connectors = {circles:[], lines:[]}
+  , _connectors = {circles:[], lines:[], points:[]}
   , _slice = Array.prototype.slice
 
-var MAX_POINTS = 3
+var MAX_POINTS = 5
   , SKELETON_LINE_WIDTH = 3
   , SKELETON_RADIUS = SKELETON_LINE_WIDTH + 4
   , CONNECTOR_RADIUS = SKELETON_LINE_WIDTH + 2
@@ -35,12 +35,16 @@ $('#board').on('click', function(evt) {
   POINTS.push([x, y])
 
   drawSkeleton()
-  //drawConnectors()
+  drawConnectors(1.0 * $('#time').val())
 })
 
 $('#bp').on('click', function(evt) {
   evt.preventDefault()
   _circles.forEach(function(c){ c.remove() })
+})
+
+$('#time').on('change', function(evt) {
+  drawConnectors(1.0 * $('#time').val())
 })
 
 
@@ -71,17 +75,27 @@ function drawSkeleton() {
 }
 
 function drawConnectors(time) {
-  if (POINTS.length < MAX_POINTS) return;
+  _erase(_connectors.circles, _connectors.lines, _connectors.points)
 
-  _erase(_connectors.circles, _connectors.lines)
-
-  for (var i=0; i < MAX_POINTS-1; i++) {
+  for (var i=0, len=POINTS.length; i < len-1; i++) {
     var p1=POINTS[i], p2=POINTS[i+1]
+      , x = p1[0] + ((p2[0] - p1[0]) * time)
+      , y = p1[1] + ((p2[1] - p1[1]) * time)
+
+    _connectors.points.push([x,y])
     _connectors.circles.push(new Kinetic.Circle({
-       x: (p2[0] - p1[0]) / 2.0
-      ,y: (p2[1] - p1[1]) / 2.0
+       x: x
+      ,y: y
       ,fill: '#0ff'
       ,radius: CONNECTOR_RADIUS
+    }))
+  }
+  
+  for (var j=0, len=_connectors.points.length; j < len-1; j++) {
+    _connectors.lines.push(new Kinetic.Line({
+       points: [_connectors.points[j], _connectors.points[j+1]]
+      ,stroke: '#0ff'
+      ,strokeWidth: 1
     }))
   }
 
@@ -91,16 +105,9 @@ function drawConnectors(time) {
 
 
 
-function _ensureEnoughPoints(fn) {
-  return function() {
-    if (POINTS.length < MAX_POINTS) return;
-    fn.apply(null, arguments)
-  }
-}
-
 function _erase() {
   _slice.call(arguments).forEach(function (a) {
-    a.forEach(function(o){ o.remove() })
+    a.forEach(function(o){ o.remove && o.remove() })
     a.length = 0
   })
 }
