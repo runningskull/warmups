@@ -3,7 +3,7 @@ var POINTS = []
   , _connectors = {circles:[], lines:[], points:[]}
   , _slice = Array.prototype.slice
 
-var MAX_POINTS = 8
+var MAX_POINTS = 12
   , LEVELS = MAX_POINTS - 3
   , SKELETON_LINE_WIDTH = 3
   , SKELETON_RADIUS = SKELETON_LINE_WIDTH + 4
