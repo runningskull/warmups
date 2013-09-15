@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+    <head>
+        <link href="//get.pictos.cc/fonts/4835/5" rel="stylesheet" type="text/css">
+        <style>
+            body { background: #f2f2f2; }
+            #board {
+                background: #fff;
+                float: left;
+                margin: 20px 0 0 20px;
+                box-shadow: 0 6px 18px rgba(0,0,0, 0.04);
+                border: 1px solid #e9e9e9;
+                border-radius: 3px;
+            }
+
+            #controls {
+                position:       fixed;
+                left:           720px;
+                border-left:    1px solid #ddd;
+                height:         100%;
+                padding:        30px;
+            }
+
+            button {
+                font-family:    'Pictos Custom';
+                font-size:      40px;
+                padding-top:    15px;
+                width:          60px;
+            }
+
+            #time {
+                width:  200px;
+                height: 20px;
+            }
+
+            label {
+                display: block;
+            }
+
+            #bd {
+                margin-left: 10px;
+                font-size: 20px;
+                padding-top: 8px;
+                width: 40px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="board">
+        </div>
+
+        <div id="controls">
+            <button id="bp">p</button>
+            <button id="bd">d</button><br/>
+            <button id="bm">m</button><br/>
+
+            <br/><label>Time:</label>
+            <input type="range" id="time" min="0" max="1" step="0.01" value="0">
+        </div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="/kinetic.js"></script>
+        <script src="/app.js"></script>
+    </body>
+</html>
