@@ -17,6 +17,7 @@ var stage = new Kinetic.Stage({
 var layers = {
    skeleton: new Kinetic.Layer()
   ,connectors: new Kinetic.Layer()
+  ,curve: new Kinetic.Layer()
 }
 
 
@@ -44,7 +45,9 @@ $('#bp').on('click', function(evt) {
 })
 
 $('#time').on('change', function(evt) {
-  drawConnectors(1.0 * $('#time').val())
+  var time = 1.0 * $('#time').val()
+  drawConnectors(time)
+  drawCurvePoints(time)
 })
 
 
@@ -101,6 +104,23 @@ function drawConnectors(time) {
 
   _addAll(layers.connectors,
           _connectors.circles, _connectors.lines)
+}
+
+function drawCurvePoints(time) {
+  for (var i=0, len=_connectors.points.length; i < len-1; i++) {
+    var p1=_connectors.points[i], p2=_connectors.points[i+1]
+      , x = p1[0] + (p2[0] - p1[0]) * time
+      , y = p1[1] + (p2[1] - p1[1]) * time
+
+    layers.curve.add(new Kinetic.Circle({
+       radius: 2
+      ,x: x
+      ,y: y
+      ,fill: '#000'
+    }))
+
+    layers.curve.draw()
+  }
 }
 
 
