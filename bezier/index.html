@@ -35,13 +35,7 @@
 
             label {
                 display: block;
-            }
-
-            #bd {
-                margin-left: 10px;
-                font-size: 20px;
-                padding-top: 8px;
-                width: 40px;
+                margin-top: 2em;
             }
         </style>
     </head>
@@ -51,13 +45,13 @@
         </div>
 
         <div id="controls">
-            <h3>the buttons do nothing:</h3>
-            <button id="bp">p</button>
-            <button id="bd">d</button><br/>
-            <button id="bm">m</button><br/>
+            <button id="bd" title="clear canvas">d</button><br/>
+
+            <label for="drawCurve">Draw curve:</label>
+            <input type="checkbox" id="drawCurve" />
 
             <br/><label>Time:</label>
-            <input type="range" id="time" min="0" max="1" step="0.01" value="0">
+            <input type="range" id="time" min="0" max="1" step="0.001" value="0">
         </div>
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>

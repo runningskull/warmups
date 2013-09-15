@@ -3,10 +3,13 @@ var POINTS = []
   , _connectors = {circles:[], lines:[], points:[]}
   , _slice = Array.prototype.slice
 
-var MAX_POINTS = 5
+var MAX_POINTS = 8
+  , LEVELS = MAX_POINTS - 3
   , SKELETON_LINE_WIDTH = 3
   , SKELETON_RADIUS = SKELETON_LINE_WIDTH + 4
   , CONNECTOR_RADIUS = SKELETON_LINE_WIDTH + 2
+
+  , CONNECTOR_COLOR = '#0ff'
   
 var stage = new Kinetic.Stage({
    container: 'board'
@@ -47,7 +50,8 @@ $('#bp').on('click', function(evt) {
 $('#time').on('change', function(evt) {
   var time = 1.0 * $('#time').val()
   drawConnectors(POINTS, 0, time)
-  drawCurvePoints(time)
+  if ($('#drawCurve').is(':checked'))
+    drawCurvePoints(time)
 })
 
 
@@ -78,10 +82,12 @@ function drawSkeleton() {
 }
 
 function drawConnectors(points, level, time) {
+  var lvlColor = _color(level)
+
   _connectors.circles[level] || (_connectors.circles.push([]))
   _connectors.lines[level] || (_connectors.lines.push([]))
   _connectors.points[level] || (_connectors.points.push([]))
-
+  
   _erase(_connectors.circles[level],
          _connectors.lines[level],
          _connectors.points[level])
@@ -95,7 +101,7 @@ function drawConnectors(points, level, time) {
     _connectors.circles[level].push(new Kinetic.Circle({
        x: x
       ,y: y
-      ,fill: '#0ff'
+      ,fill: lvlColor
       ,radius: CONNECTOR_RADIUS
     }))
   }
@@ -103,14 +109,14 @@ function drawConnectors(points, level, time) {
   for (var j=0, len=_connectors.points[level].length; j < len-1; j++) {
     _connectors.lines[level].push(new Kinetic.Line({
        points: [_connectors.points[level][j], _connectors.points[level][j+1]]
-      ,stroke: '#0ff'
+      ,stroke: lvlColor
       ,strokeWidth: 1
     }))
   }
 
   _addAll(layers.connectors,
           _connectors.circles[level], _connectors.lines[level])
-
+  
   if (level < POINTS.length-3)
     drawConnectors(_connectors.points[level], level+1, time);
 }
@@ -147,5 +153,14 @@ function _addAll(layer) {
     a.forEach(function(o){ layer.add(o) })
   })
   layer.draw()
+}
+
+
+var _alpha = '0123456789abcdef'
+function _color(level) {
+  return '#' +
+    _alpha[(3 + 3*level) % 15] +
+    _alpha[(9 + 3*level) % 15] +
+    _alpha[(13 + 3*level) % 15]
 }
 
