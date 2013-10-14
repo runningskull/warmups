@@ -8,8 +8,8 @@ var BOX_SIZE = 10
   , RIGHT=0, DOWN=1, LEFT=2, UP=3
   , DIRS = {R:1, L:-1}
 
-  , STATE_COLORS = ['#fff', '#333']
-  , RULES = 'RL'
+  , STATE_COLORS = $('#colors').text().split('\n')
+  , RULES = $('#rules').val().toUpperCase()
 
 var stage = new Kinetic.Stage({
    container: 'board'
@@ -148,7 +148,7 @@ function _move(ant) {
 
 function _flip(x,y) {
   var coord = [x,y].join(',')
-  _grid[coord] = (!_grid[coord])|0
+  _grid[coord] = ((_grid[coord]|0) + 1) % STATE_COLORS.length
   _drawCell(x,y)
 }
 
@@ -171,12 +171,20 @@ function _drawCell(x,y) {
 
 
 
-
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~ UI Events
 
 $('#pause').on('click', function(){ PAUSED = true })
 $('#go').on('click', function(){ PAUSED = false;update() })
-$('#clear').on('click', function(){ _erase(_.values(grid)); _grid={}, grid={} })
+$('#clear').on('click', function(){ _erase(_.values(grid), [_ant.group]); 
+                                    _grid={}, grid={}, _ant={x:30, y:30, dir:LEFT};
+                                    _.values(layers).forEach(function(l){ l.draw() });
+                                    update(true)})
 $('#speed').on('change', function() { SPEED = 502 - ($(this).val()|0) })
+
+$('#colors, #rules').on('keydown', function() { PAUSED = true })
+$('#colors, #rules').on('keyup', _.debounce(function(){ PAUSED = false }, 1000))
+
+$('#colors').on('keyup', function() { STATE_COLORS = $(this).val().split('\n') })
+$('#rules').on('keyup', function() { RULES = $(this).val().toUpperCase() })
 
