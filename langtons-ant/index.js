@@ -4,6 +4,7 @@ var BOX_SIZE = 10
   , NUM_CELLS = {width:STAGE_WIDTH/BOX_SIZE, height:STAGE_HEIGHT/BOX_SIZE}
   , SPEED = 10
   , PAUSED = true
+  , GENERATION = 0
 
   , RIGHT=0, DOWN=1, LEFT=2, UP=3
   , DIRS = {R:1, L:-1}
@@ -40,6 +41,7 @@ setTimeout(start, 10)
 function update(first) {
   !first && updateAnt()
 
+  $('#generation').html(GENERATION++)
   drawAnt()
   PAUSED || setTimeout(update, SPEED)
 }
@@ -179,6 +181,7 @@ $('#go').on('click', function(){ PAUSED = false;update() })
 $('#clear').on('click', function(){ _erase(_.values(grid), [_ant.group]); 
                                     _grid={}, grid={}, _ant={x:30, y:30, dir:LEFT};
                                     _.values(layers).forEach(function(l){ l.draw() });
+                                    GENERATION = 0;
                                     update(true)})
 $('#speed').on('change', function() { SPEED = 502 - ($(this).val()|0) })
 
@@ -187,4 +190,19 @@ $('#colors, #rules').on('keyup', _.debounce(function(){ PAUSED = false }, 1000))
 
 $('#colors').on('keyup', function() { STATE_COLORS = $(this).val().split('\n') })
 $('#rules').on('keyup', function() { RULES = $(this).val().toUpperCase() })
+
+$('#gencolors').on('click', function() {
+  var num = prompt('How many?')|0
+  var colors = []
+
+  while (colors.length < num) {
+    var scheme = new ColorScheme;
+    scheme.from_hue(Date.now() % 255).scheme('contrast').variation('pastel')
+    colors = colors.concat(scheme.colors())
+  }
+
+  colors.unshift('fff')
+  colors = _.map(colors, function(c){ return '#' + c })
+  $('#colors').text(colors.slice(0, num).join('\n')).trigger('keyup')
+})
 

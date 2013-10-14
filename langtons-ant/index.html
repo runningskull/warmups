@@ -21,10 +21,9 @@
             }
 
             button {
-                font-family:    'Pictos Custom';
-                font-size:      40px;
-                padding-top:    15px;
-                width:          60px;
+                font-family:    'Helvetica', sans-serif;
+                font-size:      30px;
+                padding-top:    5px;
             }
 
             #time {
@@ -36,6 +35,16 @@
                 display: block;
                 margin-top: 2em;
             }
+
+            #generation { font-weight: bold; }
+
+            #gencolors {
+                font-size: 10px;
+                position: absolute;
+                top: 0;
+                margin-top: -2px;
+                right: 0;
+            }
         </style>
     </head>
 
@@ -44,16 +53,21 @@
         </div>
 
         <div id="controls">
+            <div>Generation: <span id="generation">0</span></div><br/>
+
             <button id="go" title="start">&#9654;</button>
-            <button id="pause" title="pause">&#9724;</button><br/>
+            <button id="pause" title="pause">&#9724;</button>
             <button id="clear" title="clear">&#8634;</button><br/>
 
             <br/><label>Speed:</label>
             <input type="range" id="speed" min="1" max="502", step="100", value="400">
 
-            <br/><label>Colors:</label>
-            <textarea id="colors" rows="4">#fff
+            <div style="position:relative; margin-top:20px;">
+                <label style="margin-top:0 !important;">Colors:</label>
+                <button id="gencolors">generate</button>
+                <textarea id="colors" rows="4">#fff
 #333</textarea>
+            </div>
 
             <br/><label>Rules:</label>
             <input id="rules" value="RL">
@@ -61,6 +75,7 @@
 
         <script src="underscore.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="color-scheme.js"></script>
         <script src="kinetic.js"></script>
         <script src="index.js"></script>
     </body>
