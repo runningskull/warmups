@@ -1,4 +1,4 @@
-var BOX_SIZE = 10
+var BOX_SIZE = 5
   , STAGE_WIDTH = 640
   , STAGE_HEIGHT = 480
   , NUM_CELLS = {width:STAGE_WIDTH/BOX_SIZE, height:STAGE_HEIGHT/BOX_SIZE}
@@ -176,13 +176,18 @@ function _drawCell(x,y) {
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //~~ UI Events
 
+function RESET(ax, ay) {
+  var x = ax||30, y = ay||30
+  _erase(_.values(grid), [_ant.group]); 
+  _grid={}, grid={}, _ant={x:ax, y:ay, dir:LEFT};
+  _.values(layers).forEach(function(l){ l.draw() });
+  GENERATION = 0;
+  update(true)
+}
+
 $('#pause').on('click', function(){ PAUSED = true })
 $('#go').on('click', function(){ PAUSED = false;update() })
-$('#clear').on('click', function(){ _erase(_.values(grid), [_ant.group]); 
-                                    _grid={}, grid={}, _ant={x:30, y:30, dir:LEFT};
-                                    _.values(layers).forEach(function(l){ l.draw() });
-                                    GENERATION = 0;
-                                    update(true)})
+$('#clear').on('click', RESET)
 $('#speed').on('change', function() { SPEED = 502 - ($(this).val()|0) })
 
 $('#colors, #rules').on('keydown', function() { PAUSED = true })
@@ -190,6 +195,14 @@ $('#colors, #rules').on('keyup', _.debounce(function(){ PAUSED = false }, 1000))
 
 $('#colors').on('keyup', function() { STATE_COLORS = $(this).val().split('\n') })
 $('#rules').on('keyup', function() { RULES = $(this).val().toUpperCase() })
+
+$('#board').on('click', function(evt) {
+  if (! PAUSED) return;
+  var x = evt.offsetX / BOX_SIZE
+    , y = evt.offsetY / BOX_SIZE
+
+  RESET(x,y)
+})
 
 $('#gencolors').on('click', function() {
   var num = prompt('How many?')|0
