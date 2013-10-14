@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+    <head>
+        <style>
+            body { background: #f5f4f2; }
+            #board {
+                background: #fff;
+                float: left;
+                margin: 20px 0 0 20px;
+                box-shadow: 0 6px 18px rgba(0,0,0, 0.04);
+                border: 1px solid #ecebe8;
+                border-radius: 3px;
+            }
+
+            #controls {
+                position:       fixed;
+                left:           720px;
+                border-left:    1px solid #ddd;
+                height:         100%;
+                padding:        30px;
+            }
+
+            button {
+                font-family:    'Pictos Custom';
+                font-size:      40px;
+                padding-top:    15px;
+                width:          60px;
+            }
+
+            #time {
+                width:  200px;
+                height: 20px;
+            }
+
+            label {
+                display: block;
+                margin-top: 2em;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="board">
+        </div>
+
+        <div id="controls">
+            <button id="go" title="start">&#9654;</button>
+            <button id="pause" title="pause">&#9724;</button><br/>
+            <button id="clear" title="clear">&times;</button><br/>
+
+            <br/><label>Speed:</label>
+            <input type="range" id="speed" min="1" max="502", step="100", value="400">
+        </div>
+
+        <script src="underscore.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="kinetic.js"></script>
+        <script src="index.js"></script>
+    </body>
+</html>
