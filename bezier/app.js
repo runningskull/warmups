@@ -40,12 +40,12 @@ $('#board').on('click', function(evt) {
   drawConnectors(POINTS, 0, 1.0 * $('#time').val())
 })
 
-$('#bp').on('click', function(evt) {
+$('#bd').on('click', function(evt) {
   evt.preventDefault()
   _circles.forEach(function(c){ c.remove() })
 })
 
-$('#time').on('change', function(evt) {
+$('#time').on('input', function(evt) {
   var time = 1.0 * $('#time').val()
   drawConnectors(POINTS, 0, time)
   if ($('#drawCurve').is(':checked'))
